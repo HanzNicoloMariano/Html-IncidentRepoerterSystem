@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incident Reporting System</title>
+<style>
+:root{--bg:#f4f6f9;--c:#fff;--t:#1d2433;--m:#6a7385;--b:#dfe3ea;--p:#2557d6;--ok:#1b8a4b;--w:#c77700;--d:#c62828;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141c;--c:#192030;--t:#e6eaf2;--m:#95a0b5;--b:#2b3447;--p:#6d93ff;--ok:#4cc27f;--w:#f0a93b;--d:#ff6b6b}}
+:root[data-theme="dark"]{--bg:#10141c;--c:#192030;--t:#e6eaf2;--m:#95a0b5;--b:#2b3447;--p:#6d93ff;--ok:#4cc27f;--w:#f0a93b;--d:#ff6b6b}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--t);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1{font-size:22px;margin:0 0 14px}h3{margin:0 0 10px}h4{margin:18px 0 6px}
+#app{display:flex;min-height:100vh}
+.side{width:210px;background:var(--c);border-right:1px solid var(--b);padding:14px 10px;flex-shrink:0}
+.side h2{margin:0 0 12px;font-size:17px}
+.side a{display:block;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--t)}
+.side a:hover{background:var(--bg)}.side a.on{background:var(--p);color:#fff}
+.who{margin-top:16px;padding-top:12px;border-top:1px solid var(--b);font-size:13px}.who a{color:var(--p);padding:4px 0}
+main{flex:1;padding:20px;min-width:0}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{background:var(--p);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit;margin:2px 4px 2px 0}
+.btn.g{background:transparent;color:var(--t);border:1px solid var(--b)}.btn.s{padding:3px 9px;font-size:12px}.btn.r{background:var(--d)}
+.flt{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+input,select,textarea{font:inherit;color:var(--t);background:var(--c);border:1px solid var(--b);border-radius:8px;padding:7px 9px;max-width:100%}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:12px}.kpi b{font-size:26px;display:block}.kpi span{color:var(--m);font-size:12px}.kpi.bad b{color:var(--d)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px;margin-bottom:0}
+.card h4{margin:0 0 8px}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}.bar i{display:block;height:12px;background:var(--p);border-radius:4px;min-width:3px}.bar span:first-child{width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tw{overflow-x:auto;background:var(--c);border:1px solid var(--b);border-radius:12px}
+table{border-collapse:collapse;width:100%}th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--b);vertical-align:top}th{font-size:12px;color:var(--m);white-space:nowrap}
+tr.cl{cursor:pointer}tr.cl:hover{background:var(--bg)}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;background:#8a93a622;color:var(--m);white-space:nowrap}
+.pOpen,.pAssigned,.pPending{background:#2557d622;color:var(--p)}
+.pUnderInvestigation,.pInProgress,.pMedium,.pEvidenceGathering,.pFindingsPrepared,.pForAction{background:#c7770022;color:var(--w)}
+.pCompleted,.pResolved,.pLow,.pVerified,.pClosed{background:#1b8a4b22;color:var(--ok)}
+.pHigh,.pCritical,.pOverdue{background:#c6282822;color:var(--d)}
+.m{color:var(--m)}.err{color:var(--d);min-height:18px;margin:6px 0}
+#modal{display:none;position:fixed;inset:0;background:#0009;z-index:9;overflow:auto;padding:20px}
+#modal>div{background:var(--c);max-width:640px;margin:0 auto;border-radius:14px;padding:20px}
+label{display:block;margin:8px 0;font-size:12px;color:var(--m)}label input,label select,label textarea{display:block;width:100%;margin-top:3px;color:var(--t);font-size:14px}
+.row{margin-top:10px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--t);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:99;display:none;max-width:90%}
+#toast.bad{background:var(--d);color:#fff}
+.login{max-width:420px;margin:6vh auto;background:var(--c);border:1px solid var(--b);border-radius:14px;padding:22px;width:100%}
+.login input{width:100%;margin:4px 0 10px}
+.kv{display:flex;justify-content:space-between;border-bottom:1px dashed var(--b);padding:4px 0}
+@media(max-width:760px){#app{flex-direction:column}.side{width:100%;display:flex;gap:4px;overflow-x:auto;align-items:center;border-right:0;border-bottom:1px solid var(--b)}.side h2,.who{margin:0 8px;white-space:nowrap;border:0;padding:0}.side a{white-space:nowrap}}
+@media print{.side,.btn,.flt{display:none}}
+</style></head><body>
+<div id="app"></div><div id="modal"></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const K='irs_v1';let S,U,V='dash',F={},FORM;
+const td=()=>new Date().toISOString().slice(0,10),ds=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const gb=(a,i)=>a.find(x=>x.id==i)||{},nid=a=>Math.max(0,...a.map(x=>x.id))+1;
+const Ad='Administrator',Rp='Reporter',IO='Incident Officer',IV='Investigator',AO='Action Officer',SV='Supervisor',MG='Management';
+const C={report:[Ad,Rp,IO],edit:[Ad,IO],assign:[Ad,IO,SV],investigate:[Ad,IV],mkact:[Ad,IV,SV],act:[Ad,AO,SV],verify:[Ad,SV],resolve:[Ad,SV],close:[Ad,SV],evid:[Ad,IV,SV,IO]};
+const can=k=>C[k].includes(U.role);
+const NAV=[['dash','Dashboard'],['inc','Incidents'],['rep','Reporters',[Ad,IO,SV]],['loc','Locations',[Ad,IO,SV,MG]],['inv','Investigations',[Ad,IV,SV,IO]],['act','Actions',[Ad,AO,SV,IV]],['res','Resolutions',[Ad,SV,IO]],['rpt','Reports',[Ad,SV,MG]],['ref','Categories & Types',[Ad,IO]],['usr','Users',[Ad]],['aud','Audit Trail',[Ad,SV]]];
+const ok_=n=>{const x=NAV.find(y=>y[0]==n);return x&&(!x[2]||x[2].includes(U.role))};
+const IS=['Assigned','In Progress','Evidence Gathering','Findings Prepared','Completed'],AS=['Pending','In Progress','Completed','Verified'];
+const DEPTS=['IT Department','Facilities','Administration','Science Department','Library','Security'];
+function seed(){
+ const R=[Ad,Rp,IO,IV,AO,SV,MG],U_=['admin','juan','officer','investigator','actionofficer','supervisor','manager'],N=['System Admin','Juan Dela Cruz','Maria Santos','Pedro Reyes','Ana Lopez','Carlo Garcia','Liza Mendoza'];
+ S={users:R.map((r,i)=>({id:i+1,user:U_[i],name:N[i],role:r,pw:'demo123',active:true,rep:i==1?1:null})),
+ reps:[{id:1,empid:'2024-0001',name:'Juan Dela Cruz',dept:'IT Department',pos:'Student Assistant',contact:'09171234567',email:'juan@school.edu',addr:'Manila',type:'Student',active:true},{id:2,empid:'E-1002',name:'Maria Santos',dept:'Facilities',pos:'Facilities Officer',contact:'09181234567',email:'maria@school.edu',addr:'Quezon City',type:'Employee',active:true}],
+ cats:['Safety','Security','Accident','Property Damage','Workplace','IT/Technical','Environmental','Health','Other'].map((n,i)=>({id:i+1,name:n,active:true})),
+ types:[['Slip/Fall',3],['Equipment Failure',1],['Theft',2],['Unauthorized Access',2],['Fire',1],['Data Incident',6],['Vehicle Accident',3],['Physical Injury',3],['Computer Equipment Accident',1]].map((t,i)=>({id:i+1,name:t[0],cat:t[1],active:true})),
+ locs:[['Main Building','IT Laboratory 2','Lab Area','IT Department','2'],['Main Building','Library','Reading Area','Library','1'],['Admin Building','Cashier','Office','Administration','1'],['Science Building','Chemistry Lab','Lab Area','Science Department','3']].map((l,i)=>({id:i+1,building:l[0],room:l[1],area:l[2],dept:l[3],floor:l[4],desc:'',active:true})),
+ incs:[{id:1,no:'INC-2026-0001',rep:1,cat:1,type:9,loc:1,date:ds(-2),time:'10:30',sev:'High',desc:'A computer monitor fell from a workstation and injured a student in IT Laboratory 2.',imm:'First aid applied; area cordoned off.',status:'Open',reported:ds(-1)},
+ {id:2,no:'INC-2026-0002',rep:2,cat:3,type:1,loc:2,date:ds(-10),time:'14:15',sev:'Medium',desc:'Staff member slipped on a wet floor near the reading area.',imm:'Wet floor sign placed.',status:'Under Investigation',reported:ds(-9)},
+ {id:3,no:'INC-2026-0003',rep:1,cat:2,type:3,loc:3,date:ds(-20),time:'09:00',sev:'Low',desc:'A cash box was reported missing from the cashier office.',imm:'Office secured and guard notified.',status:'For Action',reported:ds(-19)}],
+ invs:[{id:1,inc:2,inv:4,start:ds(-8),due:ds(-1),status:'In Progress',instr:'Check floor conditions and cleaning schedule.',assigned:ds(-8)},
+ {id:2,inc:3,inv:4,start:ds(-18),due:ds(-10),status:'Completed',done:ds(-9),instr:'Review CCTV and access logs.',assigned:ds(-18),f:{find:'Cash box left unlocked after closing.',imm:'Drawer left unlocked.',root:'No closing checklist for cashier office.',contrib:'Understaffing at closing time.',wit:'Guard on duty',rec:'Introduce closing checklist and lockable cabinet.'}}],
+ evid:[{id:1,inc:3,name:'cctv-report.pdf',size:20480,desc:'CCTV review summary',by:4,date:ds(-12)}],
+ acts:[{id:1,inc:3,type:'Preventive Action',desc:'Install lockable cabinet and closing checklist.',resp:5,target:ds(-3),prio:'High',status:'In Progress',remarks:'Waiting for materials',done:''}],
+ ress:[],audit:[],notes:[]};save()}
+function load(){try{S=JSON.parse(localStorage.getItem(K))}catch(x){}if(!S||!S.users)seed()}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(x){}}
+function log(a,inc,p,n){S.audit.unshift({t:new Date().toLocaleString(),u:U?U.name:'-',a,inc:inc||'',p:p||'',n:n||''});save()}
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.className=bad?'bad':'';t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3200)}
+const cn=i=>gb(S.cats,i).name||'—',tn=i=>gb(S.types,i).name||'—',ln=i=>{const l=gb(S.locs,i);return l.building?l.building+' / '+l.room:'—'},rn=i=>gb(S.reps,i).name||'—',un=i=>gb(S.users,i).name||'—';
+const pill=s=>`<span class="pill p${String(s).replace(/\W/g,'')}">${e(s)}</span>`;
+const tbl=(h,r)=>r.length?`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(x=>`<tr ${x.o?`class="cl" onclick="${x.o}"`:''}>${x.c.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<p class="m">No records found.</p>';
+const gr=(a,f)=>{const o={};a.forEach(i=>{const k=f(i);o[k]=(o[k]||0)+1});return o};
+const card=(t,o)=>{const m=Math.max(1,...Object.values(o));const k=Object.keys(o);return `<div class="card"><h4>${t}</h4>${k.length?k.map(x=>`<div class="bar"><span>${e(x)}</span><i style="width:${o[x]/m*45}%"></i><b>${o[x]}</b></div>`).join(''):'<span class="m">No data</span>'}</div>`};
+const overdue=a=>!['Completed','Verified'].includes(a.status)&&td()>a.target,odays=a=>Math.floor((new Date(td())-new Date(a.target))/864e5);
+const vis=()=>S.incs.filter(i=>U.role==Rp?i.rep==U.rep:U.role==IV?S.invs.some(v=>v.inc==i.id&&v.inv==U.id):true);
+/* ---------- auth ---------- */
+function loginScreen(){U=null;$('#app').innerHTML=`<div class="login"><h2>🛡️ Incident Reporting System</h2><p class="m">Sign in to continue.</p><label>Username<input id="lu" autocomplete="username"></label><label>Password<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')login()"></label><div class="err" id="le"></div><button class="btn" onclick="login()">Login</button>
+<h4>Demo accounts (password: demo123)</h4><div class="m">${S.users.map(u=>`<div><a href="#" onclick="$('#lu').value='${u.user}';$('#lp').value='demo123';return false">${u.user}</a> — ${u.role}</div>`).join('')}</div><p><a href="#" onclick="resetDemo();return false" class="m">Reset demo data</a></p></div>`}
+function login(){const u=S.users.find(x=>x.user==$('#lu').value.trim()&&x.pw==$('#lp').value);if(!u)return $('#le').textContent='Invalid username or password.';if(!u.active)return $('#le').textContent='This account is deactivated. Contact the administrator.';U=u;V='dash';log('Login');shell()}
+function logout(){log('Logout');loginScreen()}
+function resetDemo(){if(confirm('Reset all data to the sample data?')){seed();loginScreen()}}
+function shell(){const n=NAV.filter(x=>ok_(x[0]));$('#app').innerHTML=`<div class="side"><h2>🛡️ IRS</h2>${n.map(x=>`<a class="${V==x[0]?'on':''}" onclick="go('${x[0]}')">${x[1]}</a>`).join('')}<div class="who">${e(U.name)}<br><small>${U.role}</small><br><a onclick="logout()">Logout</a></div></div><main id="main"></main>`;render()}
+function go(v){if(!ok_(v))return toast('Unauthorized access.',1);V=v;F={};shell()}
+function render(){try{$('#main').innerHTML=VIEWS[V]();if(V=='inc')drawInc();if(V=='rep')drawRep()}catch(x){$('#main').innerHTML='<p class="err">Something went wrong while loading this page. Please try again.</p>';console.error(x)}}
+/* ---------- modal + forms ---------- */
+const openM=h=>{$('#modal').innerHTML='<div>'+h+'</div>';$('#modal').style.display='block'},closeM=()=>{$('#modal').style.display='none'};
+const opt=a=>()=>a.map(x=>[x,x]);
+function form(title,fields,vals,ok,after){FORM={fields,ok,after};openM(`<h3>${title}</h3>`+fields.map(f=>{const v=vals[f.k]??'';let i;
+ if(f.t=='select')i=`<select id="f_${f.k}" ${f.on?`onchange="${f.on}"`:''}><option value="">Select…</option>${f.o().map(o=>`<option value="${e(o[0])}" ${o[0]==v?'selected':''}>${e(o[1])}</option>`).join('')}</select>`;
+ else if(f.t=='textarea')i=`<textarea id="f_${f.k}" rows="3">${e(v)}</textarea>`;else i=`<input id="f_${f.k}" type="${f.t||'text'}" value="${e(v)}">`;
+ return `<label>${f.l}${f.r?' *':''}${i}</label>`}).join('')+`<div id="err" class="err"></div><button class="btn" onclick="submitForm()">Save</button><button class="btn g" onclick="closeM()">Cancel</button>`)}
+function submitForm(){const d={};try{for(const f of FORM.fields){const el=$('#f_'+f.k);d[f.k]=f.t=='file'?el.files[0]:el.value.trim();if(f.r&&!d[f.k])return $('#err').textContent=f.l+' is required.'}
+ const m=FORM.ok(d);if(m)return $('#err').textContent=m;closeM();render();if(FORM.after)FORM.after()}catch(x){$('#err').textContent='A database error occurred. Please try again.';console.error(x)}}
+/* ---------- views ---------- */
+const VIEWS={dash,inc:incV,rep:repV,loc:locV,inv:invV,act:actV,res:resV,rpt:rptV,ref:refV,usr:usrV,aud:audV};
+function dash(){const I=vis(),ids=I.map(i=>i.id),A=S.acts.filter(a=>ids.includes(a.inc)),c=s=>I.filter(i=>i.status==s).length,g=f=>gr(I,f);
+ const KP=[['Total Incidents',I.length],['Open',c('Open')],['Under Investigation',c('Under Investigation')],['Pending Actions',A.filter(a=>['Pending','In Progress'].includes(a.status)).length],['Resolved',c('Resolved')],['Closed',c('Closed')],['Overdue',A.filter(overdue).length]];
+ const my=S.notes.filter(n=>n.to==U.id).slice(-3).reverse();
+ return `<h1>Dashboard</h1><div class="kpis">${KP.map(k=>`<div class="kpi ${k[0]=='Overdue'&&k[1]?'bad':''}"><b>${k[1]}</b><span>${k[0]}</span></div>`).join('')}</div>${my.length?`<div class="card" style="margin-bottom:12px"><h4>🔔 Notifications</h4>${my.map(n=>`<div>${e(n.msg)} <span class="m">${n.date}</span></div>`).join('')}</div>`:''}<div class="grid">${card('Incidents by Category',g(i=>cn(i.cat)))}${card('Incidents by Type',g(i=>tn(i.type)))}${card('Incidents by Location',g(i=>ln(i.loc)))}${card('Incidents by Severity',g(i=>i.sev))}${card('Monthly Incident Trend',g(i=>i.date.slice(0,7)))}${card('Investigation Status',gr(S.invs.filter(v=>ids.includes(v.inc)),v=>v.status))}${card('Resolution Status',g(i=>i.status))}</div>`}
+/* incidents */
+function incV(){return `<div class="hd"><h1>Incidents</h1>${can('report')?'<button class="btn" onclick="incForm()">+ Report Incident</button>':''}</div><div class="flt"><input placeholder="Search number, reporter, location, type…" oninput="F.q=this.value;drawInc()"><select onchange="F.cat=this.value;drawInc()"><option value="">All categories</option>${S.cats.map(c=>`<option value="${c.id}">${e(c.name)}</option>`).join('')}</select><select onchange="F.sev=this.value;drawInc()"><option value="">All severity</option>${['Low','Medium','High','Critical'].map(x=>`<option>${x}</option>`).join('')}</select><select onchange="F.st=this.value;drawInc()"><option value="">All status</option>${['Open','Under Investigation','For Action','Resolved','Closed'].map(x=>`<option>${x}</option>`).join('')}</select><input type="date" onchange="F.d=this.value;drawInc()"></div><div id="list"></div>`}
+function drawInc(){const q=(F.q||'').toLowerCase();const L=vis().filter(i=>(!q||[i.no,rn(i.rep),ln(i.loc),tn(i.type),cn(i.cat)].join(' ').toLowerCase().includes(q))&&(!F.cat||i.cat==F.cat)&&(!F.sev||i.sev==F.sev)&&(!F.st||i.status==F.st)&&(!F.d||i.date==F.d));
+ $('#list').innerHTML=tbl(['Number','Reporter','Category / Type','Location','Date','Severity','Status'],L.slice().reverse().map(i=>({o:`showInc(${i.id})`,c:[i.no,e(rn(i.rep)),e(cn(i.cat)+' / '+tn(i.type)),e(ln(i.loc)),i.date,pill(i.sev),pill(i.status)]})))}
+function refType(){const c=$('#f_cat').value;$('#f_type').innerHTML='<option value="">Select…</option>'+S.types.filter(t=>t.active&&t.cat==c).map(t=>`<option value="${t.id}">${e(t.name)}</option>`).join('')}
+function incForm(id){const i=id?gb(S.incs,id):{rep:U.rep};if(id&&i.status=='Closed'&&U.role!=Ad)return toast('Closed incidents cannot be edited.',1);
+ form(id?'Edit Incident '+i.no:'Report Incident',[
+ {k:'rep',l:'Reporter',t:'select',r:1,o:()=>S.reps.filter(r=>r.active&&(U.role!=Rp||r.id==U.rep)).map(r=>[r.id,r.name+' ('+r.empid+')'])},
+ {k:'cat',l:'Incident Category',t:'select',r:1,on:'refType()',o:()=>S.cats.filter(c=>c.active).map(c=>[c.id,c.name])},
+ {k:'type',l:'Incident Type',t:'select',r:1,o:()=>S.types.filter(t=>t.active&&t.cat==i.cat).map(t=>[t.id,t.name])},
+ {k:'loc',l:'Location',t:'select',r:1,o:()=>S.locs.filter(l=>l.active).map(l=>[l.id,l.building+' / '+l.room])},
+ {k:'date',l:'Date of Incident',t:'date',r:1},{k:'time',l:'Time of Incident',t:'time',r:1},{k:'sev',l:'Severity',t:'select',r:1,o:opt(['Low','Medium','High','Critical'])},
+ {k:'desc',l:'Description',t:'textarea',r:1},{k:'imm',l:'Immediate Response',t:'textarea'}],i,d=>{
+ if(isNaN(new Date(d.date)))return 'Incident date is invalid.';if(d.date>td())return 'Incident date cannot be in the future.';
+ if(gb(S.types,d.type).cat!=d.cat)return 'Incident type must belong to the selected category.';
+ if(!gb(S.locs,d.loc).id)return 'A valid location is required.';if(d.desc.length<10)return 'Please describe the incident in more detail.';
+ const v={rep:+d.rep,cat:+d.cat,type:+d.type,loc:+d.loc,date:d.date,time:d.time,sev:d.sev,desc:d.desc,imm:d.imm};
+ if(id){Object.assign(i,v);log('Edit Incident',i.no,'','updated')}else{const no='INC-'+new Date().getFullYear()+'-'+String(nid(S.incs)).padStart(4,'0');if(S.incs.some(x=>x.no==no))return 'Duplicate incident number.';S.incs.push({id:nid(S.incs),no,...v,status:'Open',reported:td()});log('Report Incident',no,'','Open')}
+ save();toast('Incident saved.')},id?()=>showInc(id):null)}
+function showInc(id){const i=gb(S.incs,id),v=S.invs.find(x=>x.inc==id),A=S.acts.filter(a=>a.inc==id),R=S.ress.find(x=>x.inc==id);const ev=can('evid')?S.evid.filter(x=>x.inc==id):[];
+ let h=`<h3>${i.no} ${pill(i.status)} ${pill(i.sev)}</h3><p><b>${e(cn(i.cat))} / ${e(tn(i.type))}</b> · ${e(ln(i.loc))}<br>Reporter: ${e(rn(i.rep))} · Occurred: ${i.date} ${i.time} · Reported: ${i.reported}</p><p>${e(i.desc)}</p><p class="m">Immediate response: ${e(i.imm||'—')}</p>`;
+ if(can('edit'))h+=`<button class="btn g s" onclick="incForm(${id})">Edit incident</button>`;
+ h+='<h4>Investigation</h4>';
+ if(!v)h+='<p class="m">Not yet assigned.</p>'+(can('assign')&&i.status=='Open'?`<button class="btn" onclick="assignInv(${id})">Assign Investigator</button>`:'');
+ else{h+=`<div class="kv"><span>Investigator</span><b>${e(un(v.inv))}</b></div><div class="kv"><span>Start / Deadline</span><b>${v.start} → ${v.due}</b></div><div class="kv"><span>Status</span>${pill(v.status)}</div>${v.done?`<div class="kv"><span>Completed</span><b>${v.done}</b></div>`:''}<p class="m">Instructions: ${e(v.instr||'—')}</p>`;
+  if(v.f&&can('evid'))h+=`<div class="card"><b>Findings / Root Cause Analysis</b><p>Problem: ${e(v.f.find)}<br>Immediate cause: ${e(v.f.imm)}<br>Root cause: ${e(v.f.root)}<br>Contributing factors: ${e(v.f.contrib||'—')}<br>Witnesses: ${e(v.f.wit||'—')}<br>Recommendation: ${e(v.f.rec||'—')}</p></div>`;
+  if(can('evid')){h+='<b>Evidence</b>'+tbl(['File','Description','Uploaded by','Date'],ev.map(x=>({c:[e(x.name)+' <span class="m">('+Math.round(x.size/1024)+' KB)</span>',e(x.desc),e(un(x.by)),x.date]})))}
+  if(can('investigate')&&v.status!='Completed'&&(U.role!=IV||v.inv==U.id))h+=`<div class="row"><button class="btn" onclick="advInv(${id})">Advance → ${IS[IS.indexOf(v.status)+1]}</button><button class="btn g" onclick="findForm(${id})">Record Findings</button><button class="btn g" onclick="evForm(${id})">Add Evidence</button></div>`}
+ h+='<h4>Corrective Actions</h4>'+tbl(['Action','Responsible','Target','Priority','Status'],A.map(a=>({c:[e(a.type+': '+a.desc),e(un(a.resp)),a.target,a.prio,pill(a.status)+(overdue(a)?' '+pill('Overdue'):'')]})));
+ if(v&&v.f&&can('mkact')&&i.status!='Closed')h+=`<button class="btn g" onclick="actForm(${id})">+ Add Action</button>`;
+ h+='<h4>Resolution</h4>';
+ if(R)h+=`<p><b>${e(R.type)}</b> — ${e(R.desc)}<br><span class="m">${R.date} by ${e(un(R.by))} · ${e(R.remarks||'')}</span></p>${i.closed?`<p>Closed on <b>${i.closed}</b></p>`:''}`;
+ else h+='<p class="m">No resolution recorded.</p>'+(can('resolve')&&i.status=='For Action'?`<button class="btn" onclick="resolveInc(${id})">Record Resolution</button>`:'');
+ if(i.status=='Resolved'&&can('close'))h+=`<button class="btn r" onclick="closeInc(${id})">Confirm &amp; Close Incident</button>`;
+ openM(h+'<div class="row"><button class="btn g" onclick="closeM()">Close window</button></div>')}
+function assignInv(id){const i=gb(S.incs,id);if(i.status!='Open')return toast('Only valid, open incidents can be assigned.',1);
+ form('Assign Investigator',[{k:'inv',l:'Investigator',t:'select',r:1,o:()=>S.users.filter(u=>u.role==IV&&u.active).map(u=>[u.id,u.name])},{k:'start',l:'Start Date',t:'date',r:1},{k:'due',l:'Target Completion Date',t:'date',r:1},{k:'instr',l:'Instructions',t:'textarea'}],{start:td()},d=>{
+ if(d.due<d.start)return 'Investigation deadline cannot precede the start date.';
+ S.invs.push({id:nid(S.invs),inc:id,inv:+d.inv,start:d.start,due:d.due,status:'Assigned',instr:d.instr,assigned:td()});i.status='Under Investigation';
+ S.notes.push({to:+d.inv,msg:'You were assigned to investigate '+i.no,date:td()});log('Assign Investigation',i.no,'Open','Under Investigation');toast('Investigator assigned. Notification sent to '+un(+d.inv)+'.')},()=>showInc(id))}
+function advInv(id){const v=S.invs.find(x=>x.inc==id),n=IS[IS.indexOf(v.status)+1];if(!n)return;
+ if(n=='Findings Prepared'&&!(v.f&&v.f.root))return toast('Record findings and root cause first.',1);
+ const p=v.status;v.status=n;if(n=='Completed'){v.done=td();gb(S.incs,id).status='For Action'}log('Investigation status',gb(S.incs,id).no,p,n);save();render();showInc(id)}
+function findForm(id){const v=S.invs.find(x=>x.inc==id),f=v.f||{};
+ form('Findings & Root Cause Analysis',[{k:'find',l:'Problem / Findings',t:'textarea',r:1},{k:'imm',l:'Immediate Cause',t:'textarea',r:1},{k:'root',l:'Root Cause',t:'textarea',r:1},{k:'contrib',l:'Contributing Factors',t:'textarea'},{k:'wit',l:'Witnesses'},{k:'rec',l:'Recommended Preventive Measures',t:'textarea'}],f,d=>{v.f=d;log('Record Findings',gb(S.incs,id).no);save();toast('Findings saved.')},()=>showInc(id))}
+function evForm(id){form('Add Evidence',[{k:'file',l:'File (pdf, jpg, png, docx, txt — max 5 MB)',t:'file',r:1},{k:'desc',l:'Description',r:1}],{},d=>{const f=d.file,x=f.name.split('.').pop().toLowerCase();
+ if(!['pdf','jpg','jpeg','png','docx','txt'].includes(x))return 'Invalid file type.';if(f.size>5e6)return 'File is too large (max 5 MB).';
+ S.evid.push({id:nid(S.evid),inc:id,name:f.name,size:f.size,desc:d.desc,by:U.id,date:td()});log('Add Evidence',gb(S.incs,id).no,'',f.name);toast('Evidence metadata recorded.')},()=>showInc(id))}
+function actForm(id){const i=gb(S.incs,id);form('Create Corrective / Preventive Action',[{k:'type',l:'Action Type',t:'select',r:1,o:opt(['Corrective Action','Preventive Action','Safety Improvement','Equipment Repair','Policy Improvement','Training','Process Improvement'])},{k:'desc',l:'Action Description',t:'textarea',r:1},{k:'resp',l:'Responsible Person',t:'select',r:1,o:()=>S.users.filter(u=>u.role==AO&&u.active).map(u=>[u.id,u.name])},{k:'target',l:'Target Date',t:'date',r:1},{k:'prio',l:'Priority',t:'select',r:1,o:opt(['Low','Medium','High'])}],{},d=>{
+ if(d.target<i.date)return 'Target date cannot precede the incident date.';S.acts.push({id:nid(S.acts),inc:id,type:d.type,desc:d.desc,resp:+d.resp,target:d.target,prio:d.prio,status:'Pending',remarks:'',done:''});
+ S.notes.push({to:+d.resp,msg:'New action assigned for '+i.no,date:td()});log('Create Action',i.no,'','Pending');toast('Action saved. '+un(+d.resp)+' notified.')},()=>showInc(id))}
+function resolveInc(id){const i=gb(S.incs,id),v=S.invs.find(x=>x.inc==id),A=S.acts.filter(a=>a.inc==id);
+ if(!can('resolve'))return toast('Only authorized personnel can record a resolution.',1);
+ if(!v)return toast('Incident must have an investigation.',1);if(v.status!='Completed')return toast('Investigation must be completed first.',1);
+ if(!A.length)return toast('At least one corrective action is required.',1);if(A.some(a=>!['Completed','Verified'].includes(a.status)))return toast('All required actions must be completed first.',1);
+ form('Record Resolution',[{k:'type',l:'Resolution Type',t:'select',r:1,o:opt(['Corrective Action Completed','Policy Change','Equipment Replaced','Referred to Authority','No Further Action'])},{k:'desc',l:'Resolution Description',t:'textarea',r:1},{k:'date',l:'Resolution Date',t:'date',r:1},{k:'remarks',l:'Remarks',t:'textarea'},{k:'doc',l:'Supporting Document (file name)'}],{date:td()},d=>{
+ if(d.date<i.date)return 'Resolution date cannot precede the incident date.';S.ress.push({id:nid(S.ress),inc:id,...d,by:U.id});i.status='Resolved';log('Record Resolution',i.no,'For Action','Resolved');toast('Resolution recorded.')},()=>showInc(id))}
+function closeInc(id){const i=gb(S.incs,id);if(!can('close'))return toast('Only authorized users can close an incident.',1);
+ if(S.acts.filter(a=>a.inc==id).some(a=>!['Completed','Verified'].includes(a.status)))return toast('Required actions must be completed before closure.',1);
+ if(!confirm('Confirm the resolution and close '+i.no+'?'))return;i.status='Closed';i.closed=td();log('Close Incident',i.no,'Resolved','Closed');save();toast('Incident closed.');render();showInc(id)}
+/* reporters */
+function repV(){return `<div class="hd"><h1>Reporters</h1><button class="btn" onclick="repForm()">+ Register Reporter</button></div><div class="flt"><input placeholder="Search name or ID" oninput="F.q=this.value;drawRep()"><select onchange="F.dp=this.value;drawRep()"><option value="">All departments</option>${DEPTS.map(d=>`<option>${d}</option>`).join('')}</select><select onchange="F.ty=this.value;drawRep()"><option value="">All types</option><option>Employee</option><option>Student</option><option>Visitor</option></select></div><div id="list"></div>`}
+function drawRep(){const q=(F.q||'').toLowerCase();const L=S.reps.filter(r=>(!q||(r.name+r.empid).toLowerCase().includes(q))&&(!F.dp||r.dept==F.dp)&&(!F.ty||r.type==F.ty));
+ $('#list').innerHTML=tbl(['ID','Name','Department','Type','Contact','Incidents','Status',''],L.map(r=>({c:[r.empid,e(r.name),e(r.dept),r.type,e(r.contact),S.incs.filter(i=>i.rep==r.id).length,pill(r.active?'Active':'Inactive'),`<button class="btn s" onclick="repProf(${r.id})">Profile</button><button class="btn g s" onclick="repForm(${r.id})">Edit</button><button class="btn g s" onclick="repTog(${r.id})">${r.active?'Deactivate':'Activate'}</button>`]})))}
+function repForm(id){const r=id?gb(S.reps,id):{};form(id?'Edit Reporter':'Register Reporter',[{k:'empid',l:'Employee/Student ID',r:1},{k:'name',l:'Full Name',r:1},{k:'dept',l:'Department',t:'select',r:1,o:opt(DEPTS)},{k:'pos',l:'Position'},{k:'contact',l:'Contact Number',r:1},{k:'email',l:'Email',t:'email'},{k:'addr',l:'Address'},{k:'type',l:'Reporter Type',t:'select',r:1,o:opt(['Employee','Student','Visitor'])}],r,d=>{
+ if(S.reps.some(x=>x.empid==d.empid&&x.id!=id))return 'This ID is already registered.';if(!/^[0-9+\-\s]{7,15}$/.test(d.contact))return 'Contact number is invalid.';if(d.email&&!/^\S+@\S+\.\S+$/.test(d.email))return 'Email is invalid.';
+ if(id)Object.assign(r,d);else S.reps.push({id:nid(S.reps),...d,active:true});log(id?'Edit Reporter':'Register Reporter','',d.name);toast(id?'Reporter updated.':'Reporter registered successfully.')})}
+function repTog(id){const r=gb(S.reps,id);r.active=!r.active;log('Reporter status','',r.name,r.active?'Active':'Inactive');render()}
+function repProf(id){const r=gb(S.reps,id),I=S.incs.filter(i=>i.rep==id);openM(`<h3>${e(r.name)} ${pill(r.active?'Active':'Inactive')}</h3><p>${r.empid} · ${r.type} · ${e(r.dept)} · ${e(r.pos||'')}<br>${e(r.contact)} · ${e(r.email||'')} · ${e(r.addr||'')}</p><p><b>${I.length}</b> incident(s) reported</p>`+tbl(['Number','Date','Category','Status','Investigation','Resolution'],I.map(i=>{const v=S.invs.find(x=>x.inc==i.id);return {c:[i.no,i.date,e(cn(i.cat)),pill(i.status),v?pill(v.status):'—',S.ress.some(x=>x.inc==i.id)?pill('Resolved'):'—']}}))+'<div class="row"><button class="btn g" onclick="closeM()">Close</button></div>')}
+/* locations */
+function locV(){const rows=S.locs.map(l=>{const I=S.incs.filter(i=>i.loc==l.id),t=gr(I,i=>i.type);return {c:[e(l.building),e(l.room),e(l.area||''),e(l.dept||''),l.floor,pill(l.active?'Active':'Inactive'),I.length,I.filter(i=>['High','Critical'].includes(i.sev)).length,I.filter(i=>!['Resolved','Closed'].includes(i.status)).length,I.filter(i=>['Resolved','Closed'].includes(i.status)).length,Object.keys(t).filter(k=>t[k]>1).map(k=>e(tn(k))).join(', ')||'—',U.role==MG?'':`<button class="btn g s" onclick="locForm(${l.id})">Edit</button><button class="btn g s" onclick="locTog(${l.id})">${l.active?'Deactivate':'Activate'}</button>`]}});
+ return `<div class="hd"><h1>Locations</h1>${U.role==MG?'':'<button class="btn" onclick="locForm()">+ Add Location</button>'}</div><p class="m">Includes location-based monitoring: incidents, high severity, open, resolved and recurring incident types.</p>`+tbl(['Building','Room/Office','Area','Department','Floor','Status','Incidents','High/Crit.','Open','Resolved','Recurring',''],rows)}
+function locForm(id){const l=id?gb(S.locs,id):{};form(id?'Edit Location':'Add Location',[{k:'building',l:'Building',r:1},{k:'room',l:'Room/Office',r:1},{k:'area',l:'Area'},{k:'dept',l:'Department',t:'select',o:opt(DEPTS)},{k:'floor',l:'Floor'},{k:'desc',l:'Location Description',t:'textarea'}],l,d=>{if(S.locs.some(x=>x.building==d.building&&x.room==d.room&&x.id!=id))return 'This location already exists.';if(id)Object.assign(l,d);else S.locs.push({id:nid(S.locs),...d,active:true});log('Location saved','',d.room);toast('Location saved.')})}
+function locTog(id){const l=gb(S.locs,id);l.active=!l.active;log('Location status','',l.room);render()}
+/* investigations, actions, resolutions */
+function invV(){const L=S.invs.filter(v=>U.role!=IV||v.inv==U.id);return `<h1>Investigations</h1>`+tbl(['Incident','Investigator','Start','Deadline','Status','Completed'],L.map(v=>({o:`showInc(${v.inc})`,c:[gb(S.incs,v.inc).no,e(un(v.inv)),v.start,v.due+(v.status!='Completed'&&td()>v.due?' '+pill('Overdue'):''),pill(v.status),v.done||'—']})))}
+function actV(){const L=S.acts.filter(a=>U.role!=AO||a.resp==U.id),O=L.filter(overdue);const row=a=>({c:[gb(S.incs,a.inc).no,e(a.type+': '+a.desc),e(un(a.resp)),a.target,a.done||'—',pill(a.status),e(a.remarks||''),a.status!='Verified'&&can('act')?`<button class="btn s" onclick="updAct(${a.id})">Update</button>`:'']});
+ return `<h1>Action Monitoring</h1><h4>Overdue Actions (${O.length})</h4>`+tbl(['Incident','Action','Responsible','Due date','Days overdue','Status'],O.map(a=>({c:[gb(S.incs,a.inc).no,e(a.desc),e(un(a.resp)),a.target,'<b class="err">'+odays(a)+'</b>',pill(a.status)]})))+`<h4>All Actions</h4>`+tbl(['Incident','Action','Responsible','Deadline','Completed','Status','Remarks',''],L.map(row))}
+function updAct(id){const a=gb(S.acts,id);form('Update Action',[{k:'status',l:'Status',t:'select',r:1,o:opt(AS)},{k:'remarks',l:'Remarks',t:'textarea'}],a,d=>{const c=AS.indexOf(a.status),n=AS.indexOf(d.status);
+ if(n!=c&&n!=c+1)return 'Invalid status transition: '+a.status+' → '+d.status+'.';if(d.status=='Verified'&&!can('verify'))return 'Only a supervisor can verify an action.';
+ const p=a.status;a.status=d.status;a.remarks=d.remarks;if(d.status=='Completed')a.done=td();log('Action status',gb(S.incs,a.inc).no,p,d.status);toast('Action updated.')})}
+function resV(){return `<h1>Resolutions</h1>`+tbl(['Incident','Type','Description','Date','Resolved by','Status'],S.ress.map(r=>({o:`showInc(${r.inc})`,c:[gb(S.incs,r.inc).no,e(r.type),e(r.desc),r.date,e(un(r.by)),pill(gb(S.incs,r.inc).status)]})))}
+/* reports */
+const kv=o=>Object.keys(o).map(k=>`<div class="kv"><span>${k}</span><b>${o[k]}</b></div>`).join('');
+function rptV(){const I=S.incs,V_=S.invs,A=S.acts,R=I.filter(i=>['Resolved','Closed'].includes(i.status)),c=s=>I.filter(i=>i.status==s).length;
+ const durs=V_.filter(v=>v.done).map(v=>(new Date(v.done)-new Date(v.start))/864e5),rt=R.map(i=>{const r=S.ress.find(x=>x.inc==i.id);return r?(new Date(r.date)-new Date(i.date))/864e5:null}).filter(x=>x!=null);
+ const avg=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1)+' days':'—',hr=gr(I.filter(i=>['High','Critical'].includes(i.sev)),i=>ln(i.loc));
+ const rec={};I.forEach(i=>{const k=ln(i.loc)+' — '+tn(i.type);rec[k]=(rec[k]||0)+1});Object.keys(rec).forEach(k=>rec[k]<2&&delete rec[k]);
+ const q=gr(I,i=>i.date.slice(0,4)+' Q'+(Math.floor((+i.date.slice(5,7)-1)/3)+1));
+ return `<div class="hd"><h1>Reports</h1><button class="btn g" onclick="print()">Print</button></div><div class="grid">
+ <div class="card"><h4>Incident Summary</h4>${kv({'Total incidents':I.length,'Open':c('Open'),'Under investigation':c('Under Investigation'),'For action':c('For Action'),'Resolved':c('Resolved'),'Closed':c('Closed')})}</div>
+ <div class="card"><h4>Investigation Report</h4>${kv({'Assigned':V_.length,'Completed':V_.filter(v=>v.done).length,'Pending':V_.filter(v=>!v.done).length,'Overdue':V_.filter(v=>!v.done&&td()>v.due).length,'Avg. duration':avg(durs)})}</div>
+ <div class="card"><h4>Corrective Action Report</h4>${kv({'Total actions':A.length,'Pending':A.filter(a=>['Pending','In Progress'].includes(a.status)).length,'Completed':A.filter(a=>['Completed','Verified'].includes(a.status)).length,'Overdue':A.filter(overdue).length})}</div>
+ <div class="card"><h4>Resolution Report</h4>${kv({'Resolved incidents':R.length,'Resolution rate':I.length?Math.round(R.length/I.length*100)+'%':'—','Avg. resolution time':avg(rt)})}</div>
+ ${card('By Category',gr(I,i=>cn(i.cat)))}${card('By Type',gr(I,i=>tn(i.type)))}${card('By Severity',gr(I,i=>i.sev))}${card('By Department (reporter)',gr(I,i=>gb(S.reps,i.rep).dept||'—'))}${card('By Location',gr(I,i=>ln(i.loc)))}${card('By Building',gr(I,i=>gb(S.locs,i.loc).building))}${card('High-Risk Locations',hr)}${card('Recurring Incidents (location — type)',rec)}${card('Actions by Responsible Person',gr(A,a=>un(a.resp)))}${card('Monthly Trend',gr(I,i=>i.date.slice(0,7)))}${card('Quarterly Trend',q)}</div>`}
+/* admin */
+function refV(){return `<div class="hd"><h1>Categories &amp; Types</h1><div><button class="btn" onclick="catForm()">+ Category</button><button class="btn" onclick="typeForm()">+ Type</button></div></div><h4>Categories</h4>`+tbl(['Category','Status',''],S.cats.map(c=>({c:[e(c.name),pill(c.active?'Active':'Inactive'),`<button class="btn g s" onclick="tog('cats',${c.id})">${c.active?'Deactivate':'Activate'}</button>`]})))+'<h4>Incident Types</h4>'+tbl(['Type','Category','Status',''],S.types.map(t=>({c:[e(t.name),e(cn(t.cat)),pill(t.active?'Active':'Inactive'),`<button class="btn g s" onclick="tog('types',${t.id})">${t.active?'Deactivate':'Activate'}</button>`]})))}
+function tog(k,id){const x=gb(S[k],id);x.active=!x.active;log('Toggle '+k,'',x.name);render()}
+function catForm(){form('Add Category',[{k:'name',l:'Category Name',r:1}],{},d=>{if(S.cats.some(c=>c.name.toLowerCase()==d.name.toLowerCase()))return 'Category already exists.';S.cats.push({id:nid(S.cats),name:d.name,active:true});log('Add category','',d.name)})}
+function typeForm(){form('Add Incident Type',[{k:'name',l:'Type Name',r:1},{k:'cat',l:'Category',t:'select',r:1,o:()=>S.cats.map(c=>[c.id,c.name])}],{},d=>{S.types.push({id:nid(S.types),name:d.name,cat:+d.cat,active:true});log('Add type','',d.name)})}
+function usrV(){return `<h1>Users &amp; Roles</h1>`+tbl(['Name','Username','Role','Status',''],S.users.map(u=>({c:[e(u.name),u.user,u.role,pill(u.active?'Active':'Inactive'),`<button class="btn g s" onclick="usrTog(${u.id})">${u.active?'Deactivate':'Activate'}</button><button class="btn g s" onclick="usrPw(${u.id})">Reset password</button>`]})))}
+function usrTog(id){const u=gb(S.users,id);if(u.id==U.id)return toast('You cannot deactivate your own account.',1);u.active=!u.active;log('User status','',u.user);render()}
+function usrPw(id){const u=gb(S.users,id);u.pw='demo123';log('Password reset','',u.user);toast('Password for '+u.user+' reset to demo123.')}
+function audV(){return `<h1>Audit Trail</h1>`+tbl(['Date/Time','User','Activity','Incident','Previous','New'],S.audit.slice(0,200).map(a=>({c:[a.t,e(a.u),e(a.a),e(a.inc),e(a.p),e(a.n)]})))}
+load();loginScreen();
+</script></body></html>
