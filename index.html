@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident Reporting System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN (Lab 34) ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>🚨 IRS</h1>
+    <p class="muted">Incident Reporting System</p>
+    <div id="loginError" class="flash err hidden"></div>
+
+    <div id="loginForm">
+      <label>Username</label>
+      <input id="login_user" type="text" placeholder="e.g. admin" autocomplete="username">
+      <label>Password</label>
+      <input id="login_pass" type="password" placeholder="Password" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') doLogin()">
+      <button class="btn primary full" onclick="doLogin()">Login</button>
+      <p style="text-align:center;margin:12px 0 0"><a href="#" onclick="showForgot(true);return false">Forgot password?</a></p>
+    </div>
+
+    <div id="forgotForm" class="hidden">
+      <h3>Reset password</h3>
+      <p class="muted" style="font-size:13px">Enter your username and the email saved in your account. A temporary password will be shown (a real system would email it).</p>
+      <label>Username</label><input id="fp_user">
+      <label>Email</label><input id="fp_email" type="email">
+      <button class="btn primary full" onclick="doForgot()">Get temporary password</button>
+      <p style="text-align:center;margin:12px 0 0"><a href="#" onclick="showForgot(false);return false">← Back to login</a></p>
+    </div>
+
+    <div class="demo-accounts">
+      <b>Demo accounts</b>
+      <table>
+        <tr><td>admin</td><td>admin123</td><td>Administrator</td></tr>
+        <tr><td>reporter</td><td>reporter123</td><td>Reporter</td></tr>
+        <tr><td>officer</td><td>officer123</td><td>Incident Officer</td></tr>
+        <tr><td>investigator</td><td>invest123</td><td>Investigator</td></tr>
+        <tr><td>actionofficer</td><td>action123</td><td>Action Officer</td></tr>
+        <tr><td>supervisor</td><td>super123</td><td>Supervisor</td></tr>
+        <tr><td>manager</td><td>manager123</td><td>Management</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APPLICATION ===== -->
+<div id="app" class="hidden">
+  <aside id="sidebar">
+    <div class="brand">🚨 IRS</div>
+    <nav id="nav"></nav>
+  </aside>
+  <div id="main">
+    <header class="topbar no-print">
+      <button class="btn small menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div id="pageTitle" class="page-title"></div>
+      <div class="userbox">
+        <a href="#" id="bell" class="bell" onclick="go('notifications');return false" title="Notifications">🔔<span id="bellCount" class="bell-count hidden">0</span></a>
+        <span id="userInfo"></span>
+        <button class="btn small" onclick="logout()">Logout</button>
+      </div>
+    </header>
+    <section id="page"></section>
+  </div>
+</div>
+
+<!-- Scripts: order matters (each file uses the one before it) -->
+<script src="js/schema.js"></script>
+<script src="js/core.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/pages1.js"></script>
+<script src="js/pages2.js"></script>
+<script src="js/pages3.js"></script>
+<script src="js/pages4.js"></script>
+</body>
+</html>

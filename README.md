@@ -1,26 +1,35 @@
-# Incident Reporting System
+# Incident Reporting System (IRS)
 
-A browser-based incident management system covering the full workflow:
+A working web application for the 63-laboratory Incident Reporting System course.
+Built with **HTML + CSS + JavaScript** (no server needed). Data is stored in the browser.
 
-**Reporter → Incident → Location → Investigation → Findings/Root Cause → Action → Resolution → Closure → Reports & Dashboard**
+**Workflow:** Reporter → Incident → Location → Investigation → Findings/Root Cause → Action → Resolution → Closure → Reports & Dashboard
 
-## Features
-- Login/logout with role-based access (Administrator, Reporter, Incident Officer, Investigator, Action Officer, Supervisor, Management)
-- Reporter registration, search/filter, profile, deactivation
-- Incident registration with validation, unique incident numbers, search and filters
-- Location management and location-based monitoring
-- Investigation assignment, status tracking, findings, root cause analysis, evidence metadata
-- Corrective actions with status tracking and overdue monitoring
-- Resolution validation and incident closure
-- Audit trail, reports, and dashboard (KPIs and charts)
+## Run it
+Open `index.html` in a browser.
 
-## Demo accounts (password: `demo123`)
-| Username | Role |
-|---|---|
-| admin | Administrator |
-| juan | Reporter |
-| officer | Incident Officer |
-| investigator | Investigator |
-| actionofficer | Action Officer |
-| supervisor | Supervisor |
-| manager | Management |
+## Demo accounts
+| Username | Password | Role |
+|---|---|---|
+| admin | admin123 | Administrator |
+| reporter | reporter123 | Reporter |
+| officer | officer123 | Incident Officer |
+| investigator | invest123 | Investigator |
+| actionofficer | action123 | Action Officer |
+| supervisor | super123 | Supervisor |
+| manager | manager123 | Management |
+
+## Files
+- `index.html`, `style.css` – page and design
+- `js/` – schema, core, logic, sample data, pages
+- `database.sql` – the same database design for MySQL
+
+The **Lab Map (1-63)** page inside the system shows where every lab is.
+
+## Showing progress (unlocking labs)
+Open `js/core.js` and change this line as you finish more labs:
+
+```js
+const UNLOCKED_LAB = 20;   // Labs 1-20 visible. Use 63 to show everything.
+```
+Upload that one file again to GitHub. Each upload is a dated entry in your history.
