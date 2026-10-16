@@ -1,33 +1,90 @@
-/* ===== IRS STYLESHEET =====
-   1. Colors  2. Login  3. Layout  4. Buttons & forms  5. Tables & badges
-   6. Cards, charts & trackers  7. Print                                   */
-
 /* 1. COLORS & BASICS */
 :root{
   --blue:#2563eb; --blue-dark:#1e40af; --bg:#f3f4f6; --white:#fff; --text:#1f2937; --muted:#6b7280;
   --border:#d1d5db; --green:#16a34a; --red:#dc2626; --orange:#d97706; --side:#111827; --accent:#b91c1c;
 }
 *{box-sizing:border-box;}
-body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
-h2{margin:0 0 14px;} h3{margin:0 0 10px;} h4{margin:14px 0 6px;}
-.hidden{display:none !important;} .muted{color:var(--muted);} a{color:var(--blue);} code{background:#e5e7eb;padding:1px 5px;border-radius:4px;font-size:13px;}
+body{margin:0;
+     font-family:"Segoe UI",
+        Arial,sans-serif;
+     background:var(--bg);
+     color:var(--text);
+     font-size:15px;}
+h2{margin:0 0 14px;} 
+h3{margin:0 0 10px;} 
+h4{margin:14px 0 6px;}
+.hidden{display:none !important;}
+.muted{color:var(--muted);} 
+a{color:var(--blue);}
+code{background:#e5e7eb;
+     padding:1px 5px;
+     border-radius:4px;
+     font-size:13px;}
 
 /* 2. LOGIN */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7f1d1d,#b91c1c 60%,#1e3a8a);padding:16px;}
-.login-box{background:#fff;padding:28px;border-radius:12px;width:100%;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,.3);}
-.login-box h1{margin:0;text-align:center;} .login-box>p{text-align:center;margin:4px 0 16px;}
-.demo-accounts{margin-top:18px;font-size:13px;background:#f9fafb;padding:10px;border-radius:8px;}
-.demo-accounts table{width:100%;margin-top:6px;} .demo-accounts td{padding:2px 4px;}
+#loginScreen{min-height:100vh;
+             display:flex;
+             align-items:center;
+             justify-content:center;
+             background:linear-gradient(135deg,#7f1d1d,#b91c1c 60%,#1e3a8a);
+             padding:16px;}
+.login-box{background:#fff;
+           padding:28px;
+           border-radius:12px;
+           width:100%;
+           max-width:400px;
+           box-shadow:0 10px 30px rgba(0,0,0,.3);}
+
+.login-box h1{margin:0;
+              text-align:center;} 
+.login-box>p{text-align:center;
+             margin:4px 0 16px;}
+.demo-accounts{margin-top:18px;
+               font-size:13px;
+               background:#f9fafb;
+               padding:10px;
+               border-radius:8px;}
+.demo-accounts table{width:100%;
+                     margin-top:6px;} 
+.demo-accounts td{padding:2px 4px;}
 
 /* 3. LAYOUT */
 #app{display:flex;min-height:100vh;}
-#sidebar{width:236px;background:var(--side);color:#e5e7eb;flex-shrink:0;padding:14px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.brand{font-size:20px;font-weight:bold;padding:0 18px 12px;color:#fff;}
-#nav a{display:block;padding:8px 18px;color:#d1d5db;text-decoration:none;font-size:14px;border-left:3px solid transparent;}
-#nav a small{display:block;font-size:11px;color:#9ca3af;}
-#nav a:hover{background:#1f2937;} #nav a.active{background:#1f2937;color:#fff;border-left-color:#ef4444;}
-#nav .unlock-note{margin:0 14px 8px;padding:6px 10px;background:#064e3b;color:#a7f3d0;border-radius:6px;font-size:12px;}
-#nav .nav-group{padding:10px 18px 2px;font-size:11px;text-transform:uppercase;color:#6b7280;letter-spacing:.05em;}
+#sidebar{width:236px;
+         background:var(--side);
+         color:#e5e7eb;
+         flex-shrink:0;
+         padding:14px 0;
+         position:sticky;
+         top:0;height:100vh;
+         overflow-y:auto;}
+.brand{font-size:20px;
+       font-weight:bold;
+       padding:0 18px 12px;
+       color:#fff;}
+#nav a{display:block;
+       padding:8px 18px;
+       color:#d1d5db;
+       text-decoration:none;
+       font-size:14px;
+       border-left:3px solid transparent;}
+#nav a small{display:block;
+             font-size:11px;
+             color:#9ca3af;}
+#nav a:hover{background:#1f2937;}
+#nav a.active{background:#1f2937;
+              color:#fff;border-left-color:#ef4444;}
+#nav .unlock-note{margin:0 14px 8px;
+                  padding:6px 10px;
+                  background:#064e3b;
+                  color:#a7f3d0;
+                  border-radius:6px;
+                  font-size:12px;}
+#nav .nav-group{padding:10px 18px 2px;
+                font-size:11px;
+                text-transform:uppercase;
+                color:#6b7280;
+                letter-spacing:.05em;}
 #main{flex:1;min-width:0;}
 .topbar{background:#fff;padding:10px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
 .page-title{font-weight:600;flex:1;} .userbox{display:flex;align-items:center;gap:10px;font-size:14px;} .menu-btn{display:none;}
